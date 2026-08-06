@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import WidgetKit
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
@@ -75,6 +76,7 @@ struct ContentView: View {
             NotificationManager.shared.cancelNotifications(for: classSchedule)
             modelContext.delete(classSchedule)
         }
+        WidgetCenter.shared.reloadAllTimelines()
     }
 }
 

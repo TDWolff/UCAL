@@ -5,6 +5,7 @@
 
 import SwiftUI
 import SwiftData
+import WidgetKit
 
 struct ClassFormView: View {
     @Environment(\.dismiss) private var dismiss
@@ -161,6 +162,7 @@ struct ClassFormView: View {
             modelContext.insert(newClass)
             NotificationManager.shared.scheduleNotifications(for: newClass)
         }
+        WidgetCenter.shared.reloadAllTimelines()
         dismiss()
     }
 }

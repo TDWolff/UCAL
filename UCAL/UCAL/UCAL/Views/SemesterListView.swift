@@ -5,6 +5,7 @@
 
 import SwiftUI
 import SwiftData
+import WidgetKit
 
 struct SemesterListView: View {
     @Environment(\.modelContext) private var modelContext
@@ -70,6 +71,7 @@ struct SemesterListView: View {
     private func activate(_ semester: Semester) {
         Semester.activate(semester, among: semesters)
         NotificationManager.shared.syncNotifications(for: classes)
+        WidgetCenter.shared.reloadAllTimelines()
     }
 
     private func deleteSemesters(at offsets: IndexSet) {
@@ -80,6 +82,7 @@ struct SemesterListView: View {
             }
             modelContext.delete(semester)
         }
+        WidgetCenter.shared.reloadAllTimelines()
     }
 }
 
@@ -148,6 +151,7 @@ private struct SemesterEditView: View {
             )
             modelContext.insert(semester)
         }
+        WidgetCenter.shared.reloadAllTimelines()
         dismiss()
     }
 }
