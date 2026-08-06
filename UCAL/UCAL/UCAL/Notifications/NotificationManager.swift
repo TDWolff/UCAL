@@ -1,0 +1,76 @@
+//
+//  NotificationManager.swift
+//  UCAL
+//
+
+import Foundation
+import UserNotifications
+
+@MainActor
+final class NotificationManager {
+    static let shared = NotificationManager()
+
+    private init() {}
+
+    @discardableResult
+    func requestAuthorization() async -> Bool {
+        do {
+            return try await UNUserNotificationCenter.current()
+                .requestAuthorization(options: [.alert, .sound, .badge])
+        } catch {
+            return false
+        }
+    }
+
+    func scheduleNotifications(for classSchedule: ClassSchedule) {
+        cancelNotifications(for: classSchedule)
+
+        let calendar = Calendar.current
+        let center = UNUserNotificationCenter.current()
+
+        for day in classSchedule.weekdays {
+            var matchComponents = DateComponents()
+            matchComponents.weekday = day.rawValue
+            matchComponents.hour = calendar.component(.hour, from: classSchedule.startTime)
+            matchComponents.minute = calendar.component(.minute, from: classSchedule.startTime)
+
+            guard let nextClassDate = calendar.nextDate(
+                after: Date(),
+                matching: matchComponents,
+                matchingPolicy: .nextTime
+            ) else { continue }
+
+            let notifyDate = calendar.date(
+                byAdding: .minute,
+                value: -classSchedule.reminderMinutesBefore,
+                to: nextClassDate
+            ) ?? nextClassDate
+
+            let triggerComponents = calendar.dateComponents([.weekday, .hour, .minute], from: notifyDate)
+            let trigger = UNCalendarNotificationTrigger(dateMatching: triggerComponents, repeats: true)
+
+            let content = UNMutableNotificationContent()
+            content.title = classSchedule.name
+            content.body = classSchedule.location.isEmpty
+                ? "Starts in \(classSchedule.reminderMinutesBefore) min"
+                : "\(classSchedule.location) • starts in \(classSchedule.reminderMinutesBefore) min"
+            content.sound = .default
+
+            let request = UNNotificationRequest(
+                identifier: identifier(for: classSchedule, day: day),
+                content: content,
+                trigger: trigger
+            )
+            center.add(request)
+        }
+    }
+
+    func cancelNotifications(for classSchedule: ClassSchedule) {
+        let identifiers = Weekday.allCases.map { identifier(for: classSchedule, day: $0) }
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: identifiers)
+    }
+
+    private func identifier(for classSchedule: ClassSchedule, day: Weekday) -> String {
+        "\(classSchedule.id.uuidString)-\(day.rawValue)"
+    }
+}
