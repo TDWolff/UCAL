@@ -71,6 +71,7 @@ struct SemesterListView: View {
     private func activate(_ semester: Semester) {
         Semester.activate(semester, among: semesters)
         NotificationManager.shared.syncNotifications(for: classes)
+        try? modelContext.save()
         WidgetCenter.shared.reloadAllTimelines()
     }
 
@@ -82,6 +83,7 @@ struct SemesterListView: View {
             }
             modelContext.delete(semester)
         }
+        try? modelContext.save()
         WidgetCenter.shared.reloadAllTimelines()
     }
 }
@@ -151,6 +153,7 @@ private struct SemesterEditView: View {
             )
             modelContext.insert(semester)
         }
+        try? modelContext.save()
         WidgetCenter.shared.reloadAllTimelines()
         dismiss()
     }
