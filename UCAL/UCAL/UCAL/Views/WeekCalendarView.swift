@@ -7,8 +7,14 @@ import SwiftUI
 import SwiftData
 
 struct WeekCalendarView: View {
+    @Environment(\.modelContext) private var modelContext
     @Query private var classes: [ClassSchedule]
+    @Query private var semesters: [Semester]
     @State private var weekOffset = 0
+
+    private var currentSemester: Semester {
+        Semester.fetchOrCreate(existing: semesters, context: modelContext)
+    }
 
     private let calendar = Calendar.current
 
@@ -85,8 +91,9 @@ struct WeekCalendarView: View {
     }
 
     private func classes(on date: Date) -> [ClassSchedule] {
-        classes
-            .filter { $0.occurs(on: date, calendar: calendar) }
+        let semester = currentSemester
+        return classes
+            .filter { $0.occurs(on: date, semester: semester, calendar: calendar) }
             .sorted { minutesOfDay($0.startTime) < minutesOfDay($1.startTime) }
     }
 
@@ -117,5 +124,5 @@ private struct CalendarClassRow: View {
 
 #Preview {
     WeekCalendarView()
-        .modelContainer(for: ClassSchedule.self, inMemory: true)
+        .modelContainer(for: [ClassSchedule.self, Semester.self], inMemory: true)
 }

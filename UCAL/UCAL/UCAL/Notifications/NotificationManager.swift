@@ -22,7 +22,7 @@ final class NotificationManager {
         }
     }
 
-    func scheduleNotifications(for classSchedule: ClassSchedule) {
+    func scheduleNotifications(for classSchedule: ClassSchedule, semester: Semester) {
         cancelNotifications(for: classSchedule)
 
         var calendar = Calendar.current
@@ -31,7 +31,7 @@ final class NotificationManager {
 
         let hour = Calendar.current.component(.hour, from: classSchedule.startTime)
         let minute = Calendar.current.component(.minute, from: classSchedule.startTime)
-        let searchStart = max(Date(), calendar.startOfDay(for: classSchedule.termStartDate))
+        let searchStart = max(Date(), calendar.startOfDay(for: semester.startDate))
 
         for day in classSchedule.weekdays {
             var matchComponents = DateComponents()
@@ -44,7 +44,7 @@ final class NotificationManager {
                 after: searchStart,
                 matching: matchComponents,
                 matchingPolicy: .nextTime
-            ), nextClassDate <= classSchedule.termEndDate else { continue }
+            ), nextClassDate <= semester.endDate else { continue }
 
             let notifyDate = calendar.date(
                 byAdding: .minute,
@@ -72,9 +72,9 @@ final class NotificationManager {
         }
     }
 
-    func syncNotifications(for classes: [ClassSchedule]) {
+    func syncNotifications(for classes: [ClassSchedule], semester: Semester) {
         for classSchedule in classes {
-            scheduleNotifications(for: classSchedule)
+            scheduleNotifications(for: classSchedule, semester: semester)
         }
     }
 
