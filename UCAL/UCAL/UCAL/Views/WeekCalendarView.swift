@@ -7,16 +7,14 @@ import SwiftUI
 import SwiftData
 
 struct WeekCalendarView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var classes: [ClassSchedule]
-    @Query private var semesters: [Semester]
+    @Query private var allClasses: [ClassSchedule]
     @State private var weekOffset = 0
 
-    private var currentSemester: Semester {
-        Semester.fetchOrCreate(existing: semesters, context: modelContext)
-    }
-
     private let calendar = Calendar.current
+
+    private var classes: [ClassSchedule] {
+        allClasses.filter { $0.semester?.isActive == true }
+    }
 
     private var weekDates: [Date] {
         let today = calendar.startOfDay(for: Date())
@@ -91,9 +89,8 @@ struct WeekCalendarView: View {
     }
 
     private func classes(on date: Date) -> [ClassSchedule] {
-        let semester = currentSemester
-        return classes
-            .filter { $0.occurs(on: date, semester: semester, calendar: calendar) }
+        classes
+            .filter { $0.occurs(on: date, calendar: calendar) }
             .sorted { minutesOfDay($0.startTime) < minutesOfDay($1.startTime) }
     }
 
@@ -106,16 +103,23 @@ private struct CalendarClassRow: View {
     let classSchedule: ClassSchedule
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(classSchedule.name)
-                .font(.headline)
-            Text(classSchedule.formattedTimeRange)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-            if !classSchedule.location.isEmpty {
-                Text(classSchedule.location)
-                    .font(.caption)
-                    .foregroundStyle(.tertiary)
+        HStack(alignment: .top, spacing: 10) {
+            Circle()
+                .fill(classSchedule.colorTag.color)
+                .frame(width: 10, height: 10)
+                .padding(.top, 6)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(classSchedule.name)
+                    .font(.headline)
+                Text(classSchedule.formattedTimeRange)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                if !classSchedule.location.isEmpty {
+                    Text(classSchedule.location)
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                }
             }
         }
         .padding(.vertical, 2)

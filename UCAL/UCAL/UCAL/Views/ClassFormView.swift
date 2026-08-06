@@ -1,25 +1,40 @@
 //
-//  AddClassView.swift
+//  ClassFormView.swift
 //  UCAL
 //
 
 import SwiftUI
 import SwiftData
 
-struct AddClassView: View {
+struct ClassFormView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     @Query private var semesters: [Semester]
 
-    @State private var name = ""
-    @State private var location = ""
-    @State private var startTime = Date()
-    @State private var endTime = Date().addingTimeInterval(3600)
-    @State private var selectedDays: Set<Weekday> = []
-    @State private var reminderMinutesBefore = 10
-    @State private var timeZoneIdentifier = TimeZone.current.identifier
+    private let existingClass: ClassSchedule?
+
+    @State private var name: String
+    @State private var location: String
+    @State private var startTime: Date
+    @State private var endTime: Date
+    @State private var selectedDays: Set<Weekday>
+    @State private var reminderMinutesBefore: Int
+    @State private var timeZoneIdentifier: String
+    @State private var colorTag: ClassColor
     @State private var showDayPicker = false
     @State private var showTimeZonePicker = false
+
+    init(existingClass: ClassSchedule? = nil) {
+        self.existingClass = existingClass
+        _name = State(initialValue: existingClass?.name ?? "")
+        _location = State(initialValue: existingClass?.location ?? "")
+        _startTime = State(initialValue: existingClass?.startTime ?? Date())
+        _endTime = State(initialValue: existingClass?.endTime ?? Date().addingTimeInterval(3600))
+        _selectedDays = State(initialValue: existingClass?.weekdays ?? [])
+        _reminderMinutesBefore = State(initialValue: existingClass?.reminderMinutesBefore ?? 10)
+        _timeZoneIdentifier = State(initialValue: existingClass?.timeZoneIdentifier ?? TimeZone.current.identifier)
+        _colorTag = State(initialValue: existingClass?.colorTag ?? .blue)
+    }
 
     private var daysSummary: String {
         selectedDays.isEmpty
@@ -37,6 +52,29 @@ struct AddClassView: View {
                 Section("Class Details") {
                     TextField("Class name", text: $name)
                     TextField("Location (optional)", text: $location)
+                }
+
+                Section("Color") {
+                    HStack {
+                        ForEach(ClassColor.allCases) { option in
+                            Button {
+                                colorTag = option
+                            } label: {
+                                Circle()
+                                    .fill(option.color)
+                                    .frame(width: 28, height: 28)
+                                    .overlay {
+                                        if colorTag == option {
+                                            Image(systemName: "checkmark")
+                                                .font(.caption.bold())
+                                                .foregroundStyle(.white)
+                                        }
+                                    }
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                    .padding(.vertical, 4)
                 }
 
                 Section("Time") {
@@ -77,14 +115,14 @@ struct AddClassView: View {
                     )
                 }
             }
-            .navigationTitle("New Class")
+            .navigationTitle(existingClass == nil ? "New Class" : "Edit Class")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") { save() }
+                    Button(existingClass == nil ? "Save" : "Save Changes") { save() }
                         .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty || selectedDays.isEmpty)
                 }
             }
@@ -98,18 +136,31 @@ struct AddClassView: View {
     }
 
     private func save() {
-        let semester = Semester.fetchOrCreate(existing: semesters, context: modelContext)
-        let newClass = ClassSchedule(
-            name: name,
-            location: location,
-            startTime: startTime,
-            endTime: endTime,
-            weekdays: selectedDays,
-            reminderMinutesBefore: reminderMinutesBefore,
-            timeZoneIdentifier: timeZoneIdentifier
-        )
-        modelContext.insert(newClass)
-        NotificationManager.shared.scheduleNotifications(for: newClass, semester: semester)
+        if let existingClass {
+            existingClass.name = name
+            existingClass.location = location
+            existingClass.startTime = startTime
+            existingClass.endTime = endTime
+            existingClass.weekdays = selectedDays
+            existingClass.reminderMinutesBefore = reminderMinutesBefore
+            existingClass.timeZoneIdentifier = timeZoneIdentifier
+            existingClass.colorTag = colorTag
+            NotificationManager.shared.scheduleNotifications(for: existingClass)
+        } else {
+            let newClass = ClassSchedule(
+                name: name,
+                location: location,
+                startTime: startTime,
+                endTime: endTime,
+                weekdays: selectedDays,
+                reminderMinutesBefore: reminderMinutesBefore,
+                timeZoneIdentifier: timeZoneIdentifier,
+                colorTag: colorTag
+            )
+            newClass.semester = Semester.activeOrCreate(existing: semesters, context: modelContext)
+            modelContext.insert(newClass)
+            NotificationManager.shared.scheduleNotifications(for: newClass)
+        }
         dismiss()
     }
 }
@@ -207,6 +258,6 @@ struct TimeZonePickerSheet: View {
 }
 
 #Preview {
-    AddClassView()
+    ClassFormView()
         .modelContainer(for: [ClassSchedule.self, Semester.self], inMemory: true)
 }

@@ -16,6 +16,8 @@ final class ClassSchedule {
     var repeatDayValues: [Int]
     var reminderMinutesBefore: Int
     var timeZoneIdentifier: String
+    var colorTag: ClassColor
+    var semester: Semester?
 
     init(
         name: String,
@@ -24,7 +26,8 @@ final class ClassSchedule {
         endTime: Date,
         weekdays: Set<Weekday>,
         reminderMinutesBefore: Int,
-        timeZoneIdentifier: String
+        timeZoneIdentifier: String,
+        colorTag: ClassColor
     ) {
         self.id = UUID()
         self.name = name
@@ -34,6 +37,7 @@ final class ClassSchedule {
         self.repeatDayValues = weekdays.map(\.rawValue).sorted()
         self.reminderMinutesBefore = reminderMinutesBefore
         self.timeZoneIdentifier = timeZoneIdentifier
+        self.colorTag = colorTag
     }
 
     var weekdays: Set<Weekday> {
@@ -51,9 +55,10 @@ final class ClassSchedule {
         return "\(startTime.formatted(style)) - \(endTime.formatted(style)) \(abbreviation)"
     }
 
-    func occurs(on date: Date, semester: Semester, calendar: Calendar = .current) -> Bool {
+    func occurs(on date: Date, calendar: Calendar = .current) -> Bool {
         guard let weekday = Weekday(rawValue: calendar.component(.weekday, from: date)),
-              weekdays.contains(weekday)
+              weekdays.contains(weekday),
+              let semester
         else { return false }
         let day = calendar.startOfDay(for: date)
         return day >= calendar.startOfDay(for: semester.startDate) && day <= calendar.startOfDay(for: semester.endDate)
