@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct UCALApp: App {
@@ -13,5 +14,6 @@ struct UCALApp: App {
         WindowGroup {
             ContentView()
         }
+        .modelContainer(for: ClassSchedule.self)
     }
 }
