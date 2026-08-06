@@ -7,6 +7,8 @@ import SwiftUI
 import SwiftData
 
 struct RootTabView: View {
+    @Query private var classes: [ClassSchedule]
+
     var body: some View {
         TabView {
             ContentView()
@@ -21,6 +23,7 @@ struct RootTabView: View {
         }
         .task {
             await NotificationManager.shared.requestAuthorization()
+            NotificationManager.shared.syncNotifications(for: classes)
         }
     }
 }

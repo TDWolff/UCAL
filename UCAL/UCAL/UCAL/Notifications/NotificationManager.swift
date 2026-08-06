@@ -31,6 +31,7 @@ final class NotificationManager {
 
         let hour = Calendar.current.component(.hour, from: classSchedule.startTime)
         let minute = Calendar.current.component(.minute, from: classSchedule.startTime)
+        let searchStart = max(Date(), calendar.startOfDay(for: classSchedule.termStartDate))
 
         for day in classSchedule.weekdays {
             var matchComponents = DateComponents()
@@ -40,10 +41,10 @@ final class NotificationManager {
             matchComponents.minute = minute
 
             guard let nextClassDate = calendar.nextDate(
-                after: Date(),
+                after: searchStart,
                 matching: matchComponents,
                 matchingPolicy: .nextTime
-            ) else { continue }
+            ), nextClassDate <= classSchedule.termEndDate else { continue }
 
             let notifyDate = calendar.date(
                 byAdding: .minute,
@@ -68,6 +69,12 @@ final class NotificationManager {
                 trigger: trigger
             )
             center.add(request)
+        }
+    }
+
+    func syncNotifications(for classes: [ClassSchedule]) {
+        for classSchedule in classes {
+            scheduleNotifications(for: classSchedule)
         }
     }
 

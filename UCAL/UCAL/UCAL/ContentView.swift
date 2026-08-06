@@ -58,10 +58,11 @@ private struct ClassRow: View {
     let classSchedule: ClassSchedule
 
     private var daysSummary: String {
-        Weekday.allCases
+        let days = Weekday.allCases
             .filter { classSchedule.weekdays.contains($0) }
             .map(\.shortName)
             .joined(separator: ", ")
+        return "\(days) • \(classSchedule.formattedTermRange)"
     }
 
     var body: some View {

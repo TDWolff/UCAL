@@ -85,9 +85,8 @@ struct WeekCalendarView: View {
     }
 
     private func classes(on date: Date) -> [ClassSchedule] {
-        guard let weekday = Weekday(rawValue: calendar.component(.weekday, from: date)) else { return [] }
-        return classes
-            .filter { $0.weekdays.contains(weekday) }
+        classes
+            .filter { $0.occurs(on: date, calendar: calendar) }
             .sorted { minutesOfDay($0.startTime) < minutesOfDay($1.startTime) }
     }
 
