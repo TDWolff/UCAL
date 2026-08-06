@@ -39,6 +39,16 @@
 		AAAAAAAAAAAAAAAAAAAAAA01 /* UCALWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = UCALWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		AAAAAAAAAAAAAAAAAAAAAA0F /* Exceptions for "UCALWidget" folder in "UCALWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = AAAAAAAAAAAAAAAAAAAAAA02 /* UCALWidgetExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		107BDE3B3025155000A6B607 /* UCAL */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
@@ -47,6 +57,9 @@
 		};
 		AAAAAAAAAAAAAAAAAAAAAA09 /* UCALWidget */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				AAAAAAAAAAAAAAAAAAAAAA0F /* Exceptions for "UCALWidget" folder in "UCALWidgetExtension" target */,
+			);
 			path = UCALWidget;
 			sourceTree = "<group>";
 		};
