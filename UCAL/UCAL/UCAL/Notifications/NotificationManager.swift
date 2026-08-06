@@ -22,8 +22,10 @@ final class NotificationManager {
         }
     }
 
-    func scheduleNotifications(for classSchedule: ClassSchedule, semester: Semester) {
+    func scheduleNotifications(for classSchedule: ClassSchedule) {
         cancelNotifications(for: classSchedule)
+
+        guard let semester = classSchedule.semester, semester.isActive else { return }
 
         var calendar = Calendar.current
         calendar.timeZone = classSchedule.timeZone
@@ -72,9 +74,9 @@ final class NotificationManager {
         }
     }
 
-    func syncNotifications(for classes: [ClassSchedule], semester: Semester) {
+    func syncNotifications(for classes: [ClassSchedule]) {
         for classSchedule in classes {
-            scheduleNotifications(for: classSchedule, semester: semester)
+            scheduleNotifications(for: classSchedule)
         }
     }
 

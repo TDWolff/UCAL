@@ -6,8 +6,37 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		AAAAAAAAAAAAAAAAAAAAAA0E /* UCALWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = AAAAAAAAAAAAAAAAAAAAAA01 /* UCALWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		AAAAAAAAAAAAAAAAAAAAAA0D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 107BDE313025155000A6B607 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AAAAAAAAAAAAAAAAAAAAAA02;
+			remoteInfo = UCALWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		AAAAAAAAAAAAAAAAAAAAAA0B /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				AAAAAAAAAAAAAAAAAAAAAA0E /* UCALWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		107BDE393025155000A6B607 /* UCAL.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UCAL.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AAAAAAAAAAAAAAAAAAAAAA01 /* UCALWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = UCALWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -16,10 +45,27 @@
 			path = UCAL;
 			sourceTree = "<group>";
 		};
+		AAAAAAAAAAAAAAAAAAAAAA09 /* UCALWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = UCALWidget;
+			sourceTree = "<group>";
+		};
+		AAAAAAAAAAAAAAAAAAAAAA0A /* Shared */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Shared;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		107BDE363025155000A6B607 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AAAAAAAAAAAAAAAAAAAAAA04 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -33,6 +79,8 @@
 			isa = PBXGroup;
 			children = (
 				107BDE3B3025155000A6B607 /* UCAL */,
+				AAAAAAAAAAAAAAAAAAAAAA09 /* UCALWidget */,
+				AAAAAAAAAAAAAAAAAAAAAA0A /* Shared */,
 				107BDE3A3025155000A6B607 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,6 +89,7 @@
 			isa = PBXGroup;
 			children = (
 				107BDE393025155000A6B607 /* UCAL.app */,
+				AAAAAAAAAAAAAAAAAAAAAA01 /* UCALWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -55,13 +104,16 @@
 				107BDE353025155000A6B607 /* Sources */,
 				107BDE363025155000A6B607 /* Frameworks */,
 				107BDE373025155000A6B607 /* Resources */,
+				AAAAAAAAAAAAAAAAAAAAAA0B /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				AAAAAAAAAAAAAAAAAAAAAA0C /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				107BDE3B3025155000A6B607 /* UCAL */,
+				AAAAAAAAAAAAAAAAAAAAAA0A /* Shared */,
 			);
 			name = UCAL;
 			packageProductDependencies = (
@@ -69,6 +121,29 @@
 			productName = UCAL;
 			productReference = 107BDE393025155000A6B607 /* UCAL.app */;
 			productType = "com.apple.product-type.application";
+		};
+		AAAAAAAAAAAAAAAAAAAAAA02 /* UCALWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AAAAAAAAAAAAAAAAAAAAAA08 /* Build configuration list for PBXNativeTarget "UCALWidgetExtension" */;
+			buildPhases = (
+				AAAAAAAAAAAAAAAAAAAAAA03 /* Sources */,
+				AAAAAAAAAAAAAAAAAAAAAA04 /* Frameworks */,
+				AAAAAAAAAAAAAAAAAAAAAA05 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				AAAAAAAAAAAAAAAAAAAAAA09 /* UCALWidget */,
+				AAAAAAAAAAAAAAAAAAAAAA0A /* Shared */,
+			);
+			name = UCALWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = UCALWidgetExtension;
+			productReference = AAAAAAAAAAAAAAAAAAAAAA01 /* UCALWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -81,6 +156,9 @@
 				LastUpgradeCheck = 2660;
 				TargetAttributes = {
 					107BDE383025155000A6B607 = {
+						CreatedOnToolsVersion = 26.6;
+					};
+					AAAAAAAAAAAAAAAAAAAAAA02 = {
 						CreatedOnToolsVersion = 26.6;
 					};
 				};
@@ -100,12 +178,20 @@
 			projectRoot = "";
 			targets = (
 				107BDE383025155000A6B607 /* UCAL */,
+				AAAAAAAAAAAAAAAAAAAAAA02 /* UCALWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		107BDE373025155000A6B607 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AAAAAAAAAAAAAAAAAAAAAA05 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -122,7 +208,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AAAAAAAAAAAAAAAAAAAAAA03 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AAAAAAAAAAAAAAAAAAAAAA0C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AAAAAAAAAAAAAAAAAAAAAA02 /* UCALWidgetExtension */;
+			targetProxy = AAAAAAAAAAAAAAAAAAAAAA0D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		107BDE423025155200A6B607 /* Debug */ = {
@@ -251,6 +352,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = UCAL/UCAL.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 9W7MKT46GD;
@@ -283,6 +385,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = UCAL/UCAL.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 9W7MKT46GD;
@@ -310,6 +413,54 @@
 			};
 			name = Release;
 		};
+		AAAAAAAAAAAAAAAAAAAAAA06 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = UCALWidget/UCALWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9W7MKT46GD;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = UCALWidget/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = torinwolff.UCAL.UCALWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AAAAAAAAAAAAAAAAAAAAAA07 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = UCALWidget/UCALWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9W7MKT46GD;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = UCALWidget/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = torinwolff.UCAL.UCALWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -327,6 +478,15 @@
 			buildConfigurations = (
 				107BDE453025155200A6B607 /* Debug */,
 				107BDE463025155200A6B607 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AAAAAAAAAAAAAAAAAAAAAA08 /* Build configuration list for PBXNativeTarget "UCALWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AAAAAAAAAAAAAAAAAAAAAA06 /* Debug */,
+				AAAAAAAAAAAAAAAAAAAAAA07 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -7,16 +7,17 @@
 
 import SwiftUI
 import SwiftData
+import WidgetKit
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query(sort: \ClassSchedule.startTime) private var classes: [ClassSchedule]
-    @Query private var semesters: [Semester]
+    @Query(sort: \ClassSchedule.startTime) private var allClasses: [ClassSchedule]
     @State private var showAddClass = false
-    @State private var showSemesterSettings = false
+    @State private var showSemesterList = false
+    @State private var editingClass: ClassSchedule?
 
-    private var currentSemester: Semester {
-        Semester.fetchOrCreate(existing: semesters, context: modelContext)
+    private var classes: [ClassSchedule] {
+        allClasses.filter { $0.semester?.isActive == true }
     }
 
     var body: some View {
@@ -30,7 +31,12 @@ struct ContentView: View {
                     )
                 } else {
                     ForEach(classes) { classSchedule in
-                        ClassRow(classSchedule: classSchedule, semester: currentSemester)
+                        Button {
+                            editingClass = classSchedule
+                        } label: {
+                            ClassRow(classSchedule: classSchedule)
+                        }
+                        .buttonStyle(.plain)
                     }
                     .onDelete(perform: deleteClasses)
                 }
@@ -39,7 +45,7 @@ struct ContentView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
-                        showSemesterSettings = true
+                        showSemesterList = true
                     } label: {
                         Image(systemName: "gearshape")
                     }
@@ -53,10 +59,13 @@ struct ContentView: View {
                 }
             }
             .sheet(isPresented: $showAddClass) {
-                AddClassView()
+                ClassFormView()
             }
-            .sheet(isPresented: $showSemesterSettings) {
-                SemesterSettingsView(semester: currentSemester)
+            .sheet(item: $editingClass) { classSchedule in
+                ClassFormView(existingClass: classSchedule)
+            }
+            .sheet(isPresented: $showSemesterList) {
+                SemesterListView()
             }
         }
     }
@@ -67,36 +76,44 @@ struct ContentView: View {
             NotificationManager.shared.cancelNotifications(for: classSchedule)
             modelContext.delete(classSchedule)
         }
+        WidgetCenter.shared.reloadAllTimelines()
     }
 }
 
 private struct ClassRow: View {
     let classSchedule: ClassSchedule
-    let semester: Semester
 
     private var daysSummary: String {
         let days = Weekday.allCases
             .filter { classSchedule.weekdays.contains($0) }
             .map(\.shortName)
             .joined(separator: ", ")
+        guard let semester = classSchedule.semester else { return days }
         return "\(days) • \(semester.formattedRange)"
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(classSchedule.name)
-                .font(.headline)
-            HStack(spacing: 4) {
-                Text(classSchedule.formattedTimeRange)
-                if !classSchedule.location.isEmpty {
-                    Text("• \(classSchedule.location)")
+        HStack(alignment: .top, spacing: 10) {
+            Circle()
+                .fill(classSchedule.colorTag.color)
+                .frame(width: 10, height: 10)
+                .padding(.top, 6)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(classSchedule.name)
+                    .font(.headline)
+                HStack(spacing: 4) {
+                    Text(classSchedule.formattedTimeRange)
+                    if !classSchedule.location.isEmpty {
+                        Text("• \(classSchedule.location)")
+                    }
                 }
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                Text(daysSummary)
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
             }
-            .font(.subheadline)
-            .foregroundStyle(.secondary)
-            Text(daysSummary)
-                .font(.caption)
-                .foregroundStyle(.tertiary)
         }
         .padding(.vertical, 4)
     }

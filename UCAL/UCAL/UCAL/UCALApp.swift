@@ -14,6 +14,6 @@ struct UCALApp: App {
         WindowGroup {
             RootTabView()
         }
-        .modelContainer(for: [ClassSchedule.self, Semester.self])
+        .modelContainer(SharedModelContainer.shared)
     }
 }
