@@ -7,7 +7,9 @@ import SwiftUI
 import SwiftData
 
 struct RootTabView: View {
+    @Environment(\.modelContext) private var modelContext
     @Query private var classes: [ClassSchedule]
+    @Query private var semesters: [Semester]
 
     var body: some View {
         TabView {
@@ -23,12 +25,13 @@ struct RootTabView: View {
         }
         .task {
             await NotificationManager.shared.requestAuthorization()
-            NotificationManager.shared.syncNotifications(for: classes)
+            let semester = Semester.fetchOrCreate(existing: semesters, context: modelContext)
+            NotificationManager.shared.syncNotifications(for: classes, semester: semester)
         }
     }
 }
 
 #Preview {
     RootTabView()
-        .modelContainer(for: ClassSchedule.self, inMemory: true)
+        .modelContainer(for: [ClassSchedule.self, Semester.self], inMemory: true)
 }

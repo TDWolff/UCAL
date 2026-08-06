@@ -11,7 +11,13 @@ import SwiftData
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \ClassSchedule.startTime) private var classes: [ClassSchedule]
+    @Query private var semesters: [Semester]
     @State private var showAddClass = false
+    @State private var showSemesterSettings = false
+
+    private var currentSemester: Semester {
+        Semester.fetchOrCreate(existing: semesters, context: modelContext)
+    }
 
     var body: some View {
         NavigationStack {
@@ -24,13 +30,20 @@ struct ContentView: View {
                     )
                 } else {
                     ForEach(classes) { classSchedule in
-                        ClassRow(classSchedule: classSchedule)
+                        ClassRow(classSchedule: classSchedule, semester: currentSemester)
                     }
                     .onDelete(perform: deleteClasses)
                 }
             }
             .navigationTitle("My Classes")
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        showSemesterSettings = true
+                    } label: {
+                        Image(systemName: "gearshape")
+                    }
+                }
                 ToolbarItem(placement: .primaryAction) {
                     Button {
                         showAddClass = true
@@ -41,6 +54,9 @@ struct ContentView: View {
             }
             .sheet(isPresented: $showAddClass) {
                 AddClassView()
+            }
+            .sheet(isPresented: $showSemesterSettings) {
+                SemesterSettingsView(semester: currentSemester)
             }
         }
     }
@@ -56,13 +72,14 @@ struct ContentView: View {
 
 private struct ClassRow: View {
     let classSchedule: ClassSchedule
+    let semester: Semester
 
     private var daysSummary: String {
         let days = Weekday.allCases
             .filter { classSchedule.weekdays.contains($0) }
             .map(\.shortName)
             .joined(separator: ", ")
-        return "\(days) • \(classSchedule.formattedTermRange)"
+        return "\(days) • \(semester.formattedRange)"
     }
 
     var body: some View {
@@ -87,5 +104,5 @@ private struct ClassRow: View {
 
 #Preview {
     ContentView()
-        .modelContainer(for: ClassSchedule.self, inMemory: true)
+        .modelContainer(for: [ClassSchedule.self, Semester.self], inMemory: true)
 }

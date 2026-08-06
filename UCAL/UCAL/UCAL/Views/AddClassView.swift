@@ -9,6 +9,7 @@ import SwiftData
 struct AddClassView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
+    @Query private var semesters: [Semester]
 
     @State private var name = ""
     @State private var location = ""
@@ -17,8 +18,6 @@ struct AddClassView: View {
     @State private var selectedDays: Set<Weekday> = []
     @State private var reminderMinutesBefore = 10
     @State private var timeZoneIdentifier = TimeZone.current.identifier
-    @State private var termStartDate = Date()
-    @State private var termEndDate = Calendar.current.date(byAdding: .weekOfYear, value: 16, to: Date()) ?? Date()
     @State private var showDayPicker = false
     @State private var showTimeZonePicker = false
 
@@ -77,16 +76,6 @@ struct AddClassView: View {
                         step: 5
                     )
                 }
-
-                Section("Semester") {
-                    DatePicker("Starts", selection: $termStartDate, displayedComponents: .date)
-                    DatePicker("Ends", selection: $termEndDate, displayedComponents: .date)
-                    if termEndDate < termStartDate {
-                        Text("End date must be after the start date.")
-                            .font(.caption)
-                            .foregroundStyle(.red)
-                    }
-                }
             }
             .navigationTitle("New Class")
             .navigationBarTitleDisplayMode(.inline)
@@ -96,11 +85,7 @@ struct AddClassView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") { save() }
-                        .disabled(
-                            name.trimmingCharacters(in: .whitespaces).isEmpty
-                                || selectedDays.isEmpty
-                                || termEndDate < termStartDate
-                        )
+                        .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty || selectedDays.isEmpty)
                 }
             }
             .sheet(isPresented: $showDayPicker) {
@@ -113,6 +98,7 @@ struct AddClassView: View {
     }
 
     private func save() {
+        let semester = Semester.fetchOrCreate(existing: semesters, context: modelContext)
         let newClass = ClassSchedule(
             name: name,
             location: location,
@@ -120,12 +106,10 @@ struct AddClassView: View {
             endTime: endTime,
             weekdays: selectedDays,
             reminderMinutesBefore: reminderMinutesBefore,
-            timeZoneIdentifier: timeZoneIdentifier,
-            termStartDate: termStartDate,
-            termEndDate: termEndDate
+            timeZoneIdentifier: timeZoneIdentifier
         )
         modelContext.insert(newClass)
-        NotificationManager.shared.scheduleNotifications(for: newClass)
+        NotificationManager.shared.scheduleNotifications(for: newClass, semester: semester)
         dismiss()
     }
 }
@@ -224,5 +208,5 @@ struct TimeZonePickerSheet: View {
 
 #Preview {
     AddClassView()
-        .modelContainer(for: ClassSchedule.self, inMemory: true)
+        .modelContainer(for: [ClassSchedule.self, Semester.self], inMemory: true)
 }
