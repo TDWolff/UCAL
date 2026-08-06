@@ -28,7 +28,9 @@ struct WeekCalendarView: View {
     var body: some View {
         NavigationStack {
             List(weekDates, id: \.self) { date in
-                Section(date.formatted(.dateTime.weekday(.wide).month(.abbreviated).day())) {
+                let isToday = calendar.isDateInToday(date)
+
+                Section {
                     let dayClasses = classes(on: date)
                     if dayClasses.isEmpty {
                         Text("No classes")
@@ -39,7 +41,22 @@ struct WeekCalendarView: View {
                             CalendarClassRow(classSchedule: classSchedule)
                         }
                     }
+                } header: {
+                    HStack {
+                        Text(date.formatted(.dateTime.weekday(.wide).month(.abbreviated).day()))
+                            .foregroundStyle(isToday ? Color.accentColor : .secondary)
+                            .fontWeight(isToday ? .bold : .regular)
+                        if isToday {
+                            Text("TODAY")
+                                .font(.caption2.bold())
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(Color.accentColor, in: Capsule())
+                                .foregroundStyle(.white)
+                        }
+                    }
                 }
+                .listRowBackground(isToday ? Color.accentColor.opacity(0.08) : nil)
             }
             .navigationTitle("Week View")
             .toolbar {
