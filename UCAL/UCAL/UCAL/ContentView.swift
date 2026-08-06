@@ -43,9 +43,6 @@ struct ContentView: View {
                 AddClassView()
             }
         }
-        .task {
-            await NotificationManager.shared.requestAuthorization()
-        }
     }
 
     private func deleteClasses(at offsets: IndexSet) {
@@ -60,10 +57,6 @@ struct ContentView: View {
 private struct ClassRow: View {
     let classSchedule: ClassSchedule
 
-    private var timeRange: String {
-        "\(classSchedule.startTime.formatted(date: .omitted, time: .shortened)) - \(classSchedule.endTime.formatted(date: .omitted, time: .shortened))"
-    }
-
     private var daysSummary: String {
         Weekday.allCases
             .filter { classSchedule.weekdays.contains($0) }
@@ -76,7 +69,7 @@ private struct ClassRow: View {
             Text(classSchedule.name)
                 .font(.headline)
             HStack(spacing: 4) {
-                Text(timeRange)
+                Text(classSchedule.formattedTimeRange)
                 if !classSchedule.location.isEmpty {
                     Text("• \(classSchedule.location)")
                 }

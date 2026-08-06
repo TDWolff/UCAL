@@ -12,7 +12,7 @@ import SwiftData
 struct UCALApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootTabView()
         }
         .modelContainer(for: ClassSchedule.self)
     }

@@ -25,14 +25,19 @@ final class NotificationManager {
     func scheduleNotifications(for classSchedule: ClassSchedule) {
         cancelNotifications(for: classSchedule)
 
-        let calendar = Calendar.current
+        var calendar = Calendar.current
+        calendar.timeZone = classSchedule.timeZone
         let center = UNUserNotificationCenter.current()
+
+        let hour = Calendar.current.component(.hour, from: classSchedule.startTime)
+        let minute = Calendar.current.component(.minute, from: classSchedule.startTime)
 
         for day in classSchedule.weekdays {
             var matchComponents = DateComponents()
+            matchComponents.timeZone = classSchedule.timeZone
             matchComponents.weekday = day.rawValue
-            matchComponents.hour = calendar.component(.hour, from: classSchedule.startTime)
-            matchComponents.minute = calendar.component(.minute, from: classSchedule.startTime)
+            matchComponents.hour = hour
+            matchComponents.minute = minute
 
             guard let nextClassDate = calendar.nextDate(
                 after: Date(),
@@ -46,7 +51,8 @@ final class NotificationManager {
                 to: nextClassDate
             ) ?? nextClassDate
 
-            let triggerComponents = calendar.dateComponents([.weekday, .hour, .minute], from: notifyDate)
+            var triggerComponents = calendar.dateComponents([.weekday, .hour, .minute], from: notifyDate)
+            triggerComponents.timeZone = classSchedule.timeZone
             let trigger = UNCalendarNotificationTrigger(dateMatching: triggerComponents, repeats: true)
 
             let content = UNMutableNotificationContent()
