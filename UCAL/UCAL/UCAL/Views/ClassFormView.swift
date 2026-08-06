@@ -162,6 +162,7 @@ struct ClassFormView: View {
             modelContext.insert(newClass)
             NotificationManager.shared.scheduleNotifications(for: newClass)
         }
+        try? modelContext.save()
         WidgetCenter.shared.reloadAllTimelines()
         dismiss()
     }

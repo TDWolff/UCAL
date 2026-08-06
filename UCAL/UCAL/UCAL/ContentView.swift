@@ -76,6 +76,7 @@ struct ContentView: View {
             NotificationManager.shared.cancelNotifications(for: classSchedule)
             modelContext.delete(classSchedule)
         }
+        try? modelContext.save()
         WidgetCenter.shared.reloadAllTimelines()
     }
 }
